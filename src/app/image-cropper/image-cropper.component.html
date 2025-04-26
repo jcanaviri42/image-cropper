@@ -1,0 +1,68 @@
+<div class="container" *ngIf="!croppedImage; else resultView">
+  <nz-card nzTitle="Upload and Crop Image" [nzActions]="[actionButtons]">
+    <!-- Upload Area -->
+    <div class="upload-area">
+      <nz-upload
+        [(nzFileList)]="fileList"
+        [nzBeforeUpload]="beforeUpload"
+        nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        nzListType="picture-card"
+        nzAccept="image/*"
+      >
+        <div>
+          <i nz-icon nzType="plus"></i>
+          <div style="margin-top: 8px">Upload Image</div>
+        </div>
+      </nz-upload>
+    </div>
+
+    <!-- Cropper Area -->
+    <div class="cropper-container" *ngIf="showCropper">
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="maintainAspectRatio"
+        [aspectRatio]="aspectRatio"
+        format="png"
+        (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded()"
+        (cropperReady)="cropperReady()"
+        (loadImageFailed)="loadImageFailed()"
+      ></image-cropper>
+    </div>
+  </nz-card>
+
+  <!-- Action Buttons (Card Footer) -->
+  <ng-template #actionButtons>
+    <div class="action-buttons">
+      <button
+        nz-button
+        nzType="primary"
+        (click)="submit()"
+        [nzLoading]="uploading"
+        [disabled]="!croppedImage"
+      >
+        Submit
+      </button>
+      <button
+        nz-button
+        nzType="default"
+        (click)="showCropper = false; croppedImage = ''; fileList = []"
+        *ngIf="showCropper"
+      >
+        Cancel
+      </button>
+    </div>
+  </ng-template>
+</div>
+
+<!-- Result View -->
+<ng-template #resultView>
+  <nz-card nzTitle="Cropped Image">
+    <div class="result-container">
+      <img [src]="croppedImage" alt="Cropped Image" class="cropped-image" />
+      <button nz-button nzType="primary" (click)="croppedImage = ''">
+        Crop Another Image
+      </button>
+    </div>
+  </nz-card>
+</ng-template>
